@@ -2,7 +2,7 @@ import Mongoose from "mongoose";
 let database: Mongoose.Connection;
 export const connect = () => {
   // add your own uri below
-  console.log(process.env.MONGO_URI,"database url")
+ 
   const uri: string = process.env.MONGO_URI || '';
   if (database) {
     return;

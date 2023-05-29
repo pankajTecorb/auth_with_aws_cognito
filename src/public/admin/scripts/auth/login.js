@@ -5,7 +5,7 @@ function login() {
         type: "POST",
         data: { email, password },
         dataType: 'json',
-        url: host + '/api/v1/admin/auth/login',
+        url: host + '/api/v1/user/auth/sign-up',
     }).done(function (data) {
         // If successful
        localStorage.setItem("name", data._doc.name);
