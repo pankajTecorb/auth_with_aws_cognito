@@ -45,7 +45,9 @@ if (process.env.NODE_ENV === 'production') {
 // Add api router
 app.use('/api/v1', apiRouter);
 
-
+app.get('/api/v1/pankaj', (req,res) =>{
+    res.send({Name:"pankaj" ,"email":"Pankaj@gmail.com"})
+});
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
