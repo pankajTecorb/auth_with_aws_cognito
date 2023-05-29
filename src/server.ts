@@ -11,7 +11,7 @@ import { CustomError } from '@utils/errors';
 import adminRoutesFE from './routes/admin-panel';
 import { connect, disconnect } from '@utils/database';
 import '@models/index';
-const cors = require("cors")
+import cors from 'cors';
 // Constants
 const app = express();
 
