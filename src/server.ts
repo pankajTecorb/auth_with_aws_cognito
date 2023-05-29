@@ -44,11 +44,14 @@ if (process.env.NODE_ENV === 'production') {
 
 // Add api router
 app.use('/api/v1', apiRouter);
-app.get('/api/v1/pankaj', (req,res) =>{
-    return res.status(200).json({
-        message: "THis is the routes check",
-        code: 200
-    });
+
+
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "append,delete,entries,foreach,get,has,keys,set,values,Authorization");
+    next();
 });
 
 app.use(cors());
