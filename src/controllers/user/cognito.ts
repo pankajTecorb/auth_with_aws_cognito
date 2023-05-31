@@ -11,7 +11,7 @@ function signUp(body: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
         try {
             const { email, password, name, phoneNumber } = body;
-            console.log(body,"body")
+            console.log(body, "body")
             const params = {
                 ClientId: cognitoConfig.clientId,
                 Username: email,
@@ -48,8 +48,9 @@ function resend(body: any): Promise<any> {
 function confirm(body: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
         try {
+            console.log(body, "body")
             const { email, code } = body;
-            const params = {
+            const params: any = {
                 ClientId: cognitoConfig.clientId,
                 ConfirmationCode: code,
                 Username: email,
@@ -138,13 +139,13 @@ function resetPassword(body: any): Promise<any> {
 function changePassword(body: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
         try {
-            const { oldPassword, newPassword ,token} = body;
+            const { oldPassword, newPassword, token } = body;
             const params = {
-                AccessToken:token  ,                 // 'USER_ACCESS_TOKEN',
+                AccessToken: token,                 // 'USER_ACCESS_TOKEN',
                 PreviousPassword: oldPassword,
                 ProposedPassword: newPassword,
             };
-            console.log(params,"par")
+            console.log(params, "par")
             const response = await cognito.changePassword(params).promise();
             console.log('Password changed successfully:', response);
             resolve({ result: response })
@@ -176,12 +177,12 @@ function deleteUser(body: any): Promise<any> {
 function signOut(body: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
         try {
-            const { deviceKey, type ,email} = body;
+            const { deviceKey, type, email } = body;
             const params = {
                 UserPoolId: cognitoConfig.userPoolId,
                 Username: email,
                 DeviceKey: deviceKey,
-              };
+            };
             const param = {
                 UserPoolId: cognitoConfig.userPoolId,
                 Username: email,
@@ -191,12 +192,12 @@ function signOut(body: any): Promise<any> {
             if (type === "Single Device") {
                 cognito.adminUserGlobalSignOut(params, (err, data) => {
                     if (err) {
-                      console.error('Error logging out user from device:', err);
+                        console.error('Error logging out user from device:', err);
                     } else {
-                      console.log('User logged out from device successfully:', data);
-                      resolve({ result: data })
+                        console.log('User logged out from device successfully:', data);
+                        resolve({ result: data })
                     }
-                  });
+                });
             } else {
                 const response = await cognito.adminUserGlobalSignOut(param).promise();
                 console.log('User signed out successfully:', response);
@@ -221,15 +222,13 @@ function userList(body: any): Promise<any> {
                 // PaginationToken: nextPageToken,
             };
             const response = await cognito.listUsers(params).promise();
-            console.log('Users:', response.Users);
-
             // // Check if there are more users to fetch
             // if (response.PaginationToken) {
             //   // Call the listUsers function recursively to fetch the next page of users
             //   await listUsers(pageSize, response.PaginationToken);
             // }
-            console.log('Users:', response.Users);
-            resolve({ result: response })
+          
+            resolve({ result: response.Users })
 
         } catch (err) {
             console.error('User list  error:', err.message);
@@ -237,7 +236,38 @@ function userList(body: any): Promise<any> {
         }
     });
 }
+// import { ListUsersResponse } from 'aws-sdk/clients/cognitoidentityserviceprovider';
 
+// function userList(body: any): Promise<any> {
+//   return new Promise(async (resolve, reject) => {
+//     try {
+//       const { pageSize, nextPageToken } = body;
+//       const params = {
+//         UserPoolId: cognitoConfig.userPoolId,
+//         // Limit: pageSize,
+//         // PaginationToken: nextPageToken,
+//       };
+//       const response: ListUsersResponse = await cognito.listUsers(params).promise();
+
+//       if (response.Users && response.Users.length > 0) {
+//         const values = response.Users.map(user => {
+//           return {
+//             Username: user.Username  ,UserStatus:user.UserStatus ,Enabled:user.Enabled , Attributes:user.Attributes
+//           };
+//         });
+
+//         resolve({ result: values });
+//       } else {
+//         resolve({ result: [] });
+//       }
+//     } catch (err) {
+//       console.error('User list error:', err.message);
+//       reject(new CustomError(err.message, StatusCodes.BAD_REQUEST));
+//     }
+//   });
+//}
+
+  
 function disableUser(body: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
         try {
@@ -277,26 +307,26 @@ function disableUser(body: any): Promise<any> {
 function refreshSession(body: any): Promise<any> {
     return new Promise(async (resolve, reject) => {
         try {
-            const { refreshToken ,accessToken} = body;
+            const { refreshToken, accessToken } = body;
             const params = {
                 AuthFlow: 'REFRESH_TOKEN',
                 ClientId: cognitoConfig.clientId,
                 AuthParameters: {
-                  REFRESH_TOKEN: refreshToken,
+                    REFRESH_TOKEN: refreshToken,
                 },
                 Session: accessToken,
-              };
-            
-              cognito.initiateAuth(params, (err, data) => {
+            };
+
+            cognito.initiateAuth(params, (err, data) => {
                 if (err) {
-                  console.error('Error refreshing session:', err);
-                  reject({result:err})
+                    console.error('Error refreshing session:', err);
+                    reject({ result: err })
                 } else {
-                  console.log('Session refreshed successfully:', data.AuthenticationResult);
-                  resolve({ result: data.AuthenticationResult })
+                    console.log('Session refreshed successfully:', data.AuthenticationResult);
+                    resolve({ result: data.AuthenticationResult })
                 }
-              });
-          
+            });
+
         } catch (err) {
             console.error('User list  error:', err.message);
             reject(new CustomError(err.message, StatusCodes.BAD_REQUEST))
