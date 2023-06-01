@@ -1,8 +1,13 @@
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
+const AWS = require('aws-sdk');
 import { CustomError } from '@utils/errors';
 import StatusCodes from 'http-status-codes';
 import { errors } from '@constants';
 import { cognitoConfig } from '../cognitoConfig';
+AWS.config.update({
+    accessKeyId: 'AKIA4EP6Z56ZSPKYBBC7',
+    secretAccessKey: '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',
+  });
 
 const cognito = new CognitoIdentityServiceProvider({ region: cognitoConfig.region });
 
